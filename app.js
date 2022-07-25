@@ -53,6 +53,12 @@ const initGame = () => {
   initBricks();
 };
 
+const changeDirectionX = () => {
+  if (x + dx > canvas.width - ballRadius || x + dx < ballRadius) {
+    dx = -dx;
+  }
+};
+
 const initBricks = () => {
   bricks = [];
   for (let c = 0; c < brickColumnCount; c++) {
@@ -103,22 +109,21 @@ const collisionDetection = () => {
   for (let c = 0; c < brickColumnCount; c++) {
     for (let r = 0; r < brickRowCount; r++) {
       let b = bricks[c][r];
-      if (b.status == 1) {
-        if (
-          x > b.x &&
-          x < b.x + brickWidth &&
-          y > b.y &&
-          y < b.y + brickHeight
-        ) {
-          dy = -dy;
-          b.status = 0;
-          currentScore++;
-          score += currentScore;
-          if (currentScore == brickRowCount * brickColumnCount) {
-            currentScore = 0;
-            alert("YOU WIN, CONGRATS!");
-            document.location.reload();
-          }
+      if (
+        b.status == 1 &&
+        x > b.x &&
+        x < b.x + brickWidth &&
+        y > b.y &&
+        y < b.y + brickHeight
+      ) {
+        dy = -dy;
+        b.status = 0;
+        currentScore++;
+        score += currentScore;
+        if (currentScore == brickRowCount * brickColumnCount) {
+          currentScore = 0;
+          alert("YOU WIN, CONGRATS!");
+          document.location.reload();
         }
       }
     }
@@ -180,9 +185,7 @@ const draw = () => {
   drawLives();
   collisionDetection();
 
-  if (x + dx > canvas.width - ballRadius || x + dx < ballRadius) {
-    dx = -dx;
-  }
+  changeDirectionX();
   if (y + dy < ballRadius) {
     dy = -dy;
   } else if (y + dy > canvas.height - ballRadius) {
